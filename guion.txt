@@ -1,0 +1,124 @@
+🎥 POST 1: ¿Qué aparatos usamos?
+🗣️ Narrador:
+“Si estás pensando que esto parece magia... ¡es tecnología aplicada a la sostenibilidad!
+En Piscis usamos un conjunto de aparatos que permiten que todo funcione sin que tengamos que estar encima constantemente.”
+
+📸 Clip 1: toma del sistema funcionando
+🗣️
+“Primero, tenemos una bomba de agua, que se encarga de mover el agua desde el tanque donde vive Pep hasta el filtro biológico y las plantas.
+Esto mantiene el ciclo en constante movimiento.”
+
+📸 Clip 2: mostrando sensores, cables o placa
+🗣️
+“También usamos sensores de temperatura y humedad, que controlan el ambiente para asegurarnos de que tanto el agua como las plantas estén en condiciones ideales.”
+
+📸 Clip 3: placa electrónica (tipo Arduino o similar)
+🗣️
+“Una placa de control, conectada por código, recibe toda la información de los sensores.
+Así, podemos automatizar ciertas tareas o incluso controlarlas a distancia.”
+
+📸 Clip 4: visión general
+🗣️
+“Gracias a esto, Pep vive feliz y el sistema se mantiene eficiente, todo con ayuda de la electrónica, el hardware... y unas cuantas horas de soldador.”
+
+🎥 POST 2: ¿Qué es la acuaponía?
+🗣️ Narrador:
+“En la naturaleza, todo está conectado. La acuaponía es una forma de imitar ese equilibrio, usando tecnología para hacerlo posible incluso en casa.”
+
+📸 Clip 1: Pep nadando, con texto: "Peces + Plantas = Acuaponía"
+🗣️
+“En este sistema, los peces producen residuos que normalmente serían desechados.
+Pero aquí… se convierten en oro líquido para las plantas.”
+
+📸 Clip 2: agua fluyendo hacia las raíces de plantas
+🗣️
+“El agua cargada de nutrientes pasa a través de un sustrato filtrante, donde las plantas los absorben como fertilizante.
+A cambio, esas plantas limpian el agua…”
+
+📸 Clip 3: agua regresando al tanque limpio
+🗣️
+“…y la devuelven al tanque de los peces.
+Así, se forma un circuito cerrado, eficiente y ecológico.”
+
+📸 Cierre con Pep y las plantas verdes
+🗣️
+“Este equilibrio perfecto entre biología y tecnología se llama acuaponía.
+Y Pep es parte esencial del ciclo.”
+
+🎥 POST 3: ¿Cómo funciona el filtro?
+🗣️ Narrador:
+“El filtro de nuestro sistema es como el corazón de un organismo: no se ve mucho, pero trabaja todo el tiempo para mantener la vida.”
+
+📸 Clip 1: mostrando la bomba de agua y la entrada al filtro
+🗣️
+“El agua del tanque sube gracias a la bomba y entra en el filtro.
+Ahí es donde empieza la magia.”
+
+📸 Clip 2: dentro del filtro, esponjas o materiales filtrantes
+🗣️
+“Primero, pasa por esponjas y materiales porosos, que retienen los desechos sólidos.
+Esto evita que se acumulen en el tanque o dañen a Pep.”
+
+📸 Clip 3: plantas en la zona de cultivo
+🗣️
+“Luego, el agua fluye hacia el área de las plantas, que aprovechan los nutrientes disueltos, como nitrógeno y fósforo.”
+
+📸 Clip 4: agua volviendo al tanque
+🗣️
+“Una vez filtrada por los materiales y purificada por las raíces, el agua regresa limpia al hogar de Pep.”
+
+📸 Cierre con imagen relajante del acuario
+🗣️
+“Gracias a este sistema, no solo limpiamos el agua…
+también cuidamos del planeta.”
+
+🎥 POST 4: Nuestras ODS (Objetivos de Desarrollo Sostenible)
+🗣️ Narrador:
+“Piscis no es solo tecnología. Es un proyecto con propósito.
+Por eso, está alineado con los Objetivos de Desarrollo Sostenible de la ONU.”
+
+📸 Clip 1: mostrar ODS visualmente en pantalla
+🗣️
+“Cumplimos con el objetivo 6: Agua limpia y saneamiento, al reutilizar y filtrar agua sin químicos.”
+
+📸 Clip 2: sistema eléctrico o solar si lo hay
+🗣️
+“El objetivo 7: Energía asequible y no contaminante, si usamos fuentes renovables o bajo consumo.”
+
+📸 Clip 3: plantas creciendo en el sistema
+🗣️
+“Contribuimos al objetivo 12: Producción y consumo responsables, al aprovechar recursos sin desperdiciar.”
+
+📸 Clip 4: imagen de Pep, texto: “Vida submarina”
+🗣️
+“Y, por supuesto, el objetivo 14: Vida submarina.
+Pep vive en un entorno saludable, y eso también es cuidar del ecosistema.”
+
+📸 Cierre con plano del sistema completo
+🗣️
+“Piscis es nuestro pequeño paso hacia un futuro más verde.”
+
+🎥 POST 5: Trabajo en equipo
+🗣️ Narrador:
+“Construir un sistema como Piscis no es tarea de uno solo.
+Detrás de cada cable, cada planta y cada idea… hay personas.”
+
+📸 Clip 1: equipo trabajando, soldando, programando
+🗣️
+“Desde diseñar el circuito, hasta montar las piezas o programar los sensores,
+todo ha sido fruto del trabajo en equipo.”
+
+📸 Clip 2: gente discutiendo, compartiendo ideas
+🗣️
+“Resolver errores, compartir ideas, adaptarse…
+eso también forma parte del proceso.”
+
+📸 Clip 3: alguien alimentando a Pep o riendo juntos
+🗣️
+“Y sí, Pep es la estrella…
+pero sin este equipo, no habría espectáculo.”
+
+📸 Cierre con foto o video grupal, con música alegre
+🗣️
+“Piscis es un proyecto técnico…
+pero también es humano.”
