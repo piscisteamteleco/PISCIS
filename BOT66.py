@@ -12,7 +12,7 @@ def normalize_text(text):
     text = unicodedata.normalize('NFD', text)
     text = ''.join([c for c in text if unicodedata.category(c) != 'Mn'])
     text = text.replace("¡", "").replace("!", "").replace("¿", "").replace("?", "")
-    return text.lower()
+    return text.lower().strip()
 
 class Bot(commands.Bot):
     def __init__(self):
@@ -21,17 +21,61 @@ class Bot(commands.Bot):
             prefix="!",
             initial_channels=["piscisteleco"]
         )
-        self.secret_word = None
-        self.hint = None
+        self.secret_question = None
+        self.secret_answer = None
         self.user_points = {}
         self.duelo = None
         self.duelo_active = False
         self.question_pool = [
-            ("¿Cuál es el océano más grande del mundo?", "oceano pacifico"),
-            ("¿Qué animal marino tiene ocho brazos?", "pulpo"),
-            ("¿Qué es la acuaponía?", "sistema que combina acuicultura e hidroponia"),
-            ("¿Cómo se llama el pez del proyecto?", "pep"),
-            ("¿Qué planta acuática es fundamental en el mar?", "alga"),
+            ("¿Capital de Francia?", "paris"),
+            ("¿Color del cielo?", "azul"),
+            ("¿Animal que ladra?", "perro"),
+            ("¿Principal satélite de la Tierra?", "luna"),
+            ("¿Elemento químico H2O?", "agua"),
+            ("¿Número de patas de una araña?", "ocho"),
+            ("¿Animal rey de la selva?", "leon"),
+            ("¿Montaña más alta?", "everest"),
+            ("¿País con forma de bota?", "italia"),
+            ("¿Lenguaje hablado en Brasil?", "portugues"),
+            ("¿Nombre del creador de Microsoft?", "bill gates"),
+            ("¿Planeta rojo?", "marte"),
+            ("¿Instrumento con cuerdas?", "guitarra"),
+            ("¿Mes con Navidad?", "diciembre"),
+            ("¿Fruta amarilla curva?", "platano"),
+            ("¿Animal que maúlla?", "gato"),
+            ("¿Comida hecha con harina y tomate?", "pizza"),
+            ("¿Día después del viernes?", "sabado"),
+            ("¿Cosa que usas para escribir?", "lapiz"),
+            ("¿Color de la sangre?", "rojo"),
+            ("¿Nombre del océano más grande?", "pacifico"),
+            ("¿Lugar donde hay arena y mar?", "playa"),
+            ("¿Bebida caliente con cafeína?", "cafe"),
+            ("¿Qué se usa para ver mejor a distancia?", "gafas"),
+            ("¿Día de los enamorados?", "san valentin"),
+            ("¿Animal con trompa?", "elefante"),
+            ("¿País de los canguros?", "australia"),
+            ("¿Dios del trueno nórdico?", "thor"),
+            ("¿Color del pasto?", "verde"),
+            ("¿Animal que pone huevos y vuela?", "pajaro"),
+            ("¿Animal lento con caparazón?", "tortuga"),
+            ("¿Lenguaje de España?", "espanol"),
+            ("¿Pieza de ajedrez más importante?", "rey"),
+            ("¿Mes con Halloween?", "octubre"),
+            ("¿Cosa que da luz por la noche?", "luna"),
+            ("¿Nombre del detective de Sherlock?", "watson"),
+            ("¿Comida que viene del maíz?", "palomitas"),
+            ("¿Animal que salta y vive en charcos?", "rana"),
+            ("¿Red social de videos cortos?", "tiktok"),
+            ("¿Forma del balón de fútbol?", "esfera"),
+            ("¿Metal usado en cables eléctricos?", "cobre"),
+            ("¿Gas necesario para respirar?", "oxigeno"),
+            ("¿Comida italiana con salsa?", "pasta"),
+            ("¿Nombre del ratón de Disney?", "mickey"),
+            ("¿Estrella del sistema solar?", "sol"),
+            ("¿Cereal que se come en la mañana?", "avena"),
+            ("¿Nombre del mago de Hogwarts?", "harry"),
+            ("¿Cosa que muestra la hora?", "reloj"),
+            ("¿Vehículo con dos ruedas?", "bicicleta")
         ]
         self.challenge_task_running = False
 
@@ -52,6 +96,14 @@ class Bot(commands.Bot):
 
         if "hola" in msg_normalized:
             await message.channel.send(f"👋 ¡Hola, {message.author.name}! ¿Listo para aprender y jugar?")
+
+        if self.secret_answer:
+            if msg_normalized == normalize_text(self.secret_answer):
+                user = message.author.name
+                self.user_points[user] = self.user_points.get(user, 0) + 5
+                await message.channel.send(f"🎉 ¡Correcto, {user}! Has ganado 5 puntos.")
+                self.secret_question = None
+                self.secret_answer = None
 
         if self.duelo_active and self.duelo:
             correct_answer = normalize_text(self.duelo['current_answer'])
@@ -151,18 +203,19 @@ class Bot(commands.Bot):
 
     async def challenge_task(self):
         while True:
-            await asyncio.sleep(300)
-            if not self.secret_word:
-                word, hint = random.choice(self.question_pool)
-                self.secret_word = hint
-                await self.connected_channels[0].send(f"🎯 ¡Reto rápido! Adivina: {word}")
+            await asyncio.sleep(180)  # Cada 3 minutos
+            if not self.secret_answer:
+                question, answer = random.choice(self.question_pool)
+                self.secret_question = question
+                self.secret_answer = answer
+                await self.connected_channels[0].send(f"🧠 Pregunta rápida: {question}")
 
     async def reminder_task(self):
         while True:
             await asyncio.sleep(600)
             await self.connected_channels[0].send("¿Ya conoces los comandos? Usa !comandos para saber todo lo que puedes hacer ✨")
 
-# Bucle principal con autoreinicio en caso de error
+# Bucle principal con autoreinicio
 while True:
     try:
         bot = Bot()
