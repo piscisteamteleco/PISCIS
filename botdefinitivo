@@ -1,0 +1,528 @@
+import os
+import time
+import asyncio
+import random
+import unicodedata
+import requests
+from dotenv import load_dotenv
+from twitchio.ext import commands
+
+# Carga el archivo de variables de entorno (ajusta el nombre si es necesario)
+load_dotenv("token.env")
+
+# --- Configuración de ThingSpeak ---
+THINGSPEAK_WRITE_KEY = os.getenv("THINGSPEAK_WRITE_KEY")
+THINGSPEAK_CHANNEL_ID = os.getenv("THINGSPEAK_CHANNEL_ID")  # Por si quieres usarlo en el futuro
+
+COLOR_MAP = {
+    "ROJO":    "FF0000",
+    "AZUL":    "0000FF",
+    "AMARILLO":"FFFF00",
+    "VERDE":   "00FF00",
+    "NARANJA": "FFA500",
+    "MORADO":  "800080",
+    "BLANCO":  "FFFFFF",
+    "ROSA":    "FFC0CB",
+    "ARCOIRIS":"RAINBOW"
+}
+
+def normalize_text(text):
+    text = unicodedata.normalize('NFD', text)
+    text = ''.join([c for c in text if unicodedata.category(c) != 'Mn'])
+    return ''.join([c for c in text if c.isalnum() or c.isspace()]).lower().strip()
+
+class Bot(commands.Bot):
+    def __init__(self):
+        super().__init__(
+            token=os.getenv("TWITCH_TOKEN"),
+            prefix="!",
+            initial_channels=["piscisteleco"]
+        )
+        self.secret_question = None
+        self.secret_answer = None
+        self.secret_hint = None
+        self.user_points = {}
+        self.duelo = None
+        self.duelo_active = False
+        self.challenge_task_running = False
+        self.locura_active = False
+        self.locura_counter = 0
+        self.used_questions = set()
+
+        self.question_pool = [
+            # (Preguntas básicas aquí... las mismas que tenías)
+            ("¿De qué color es el cielo durante un día despejado?", "azul", "Es el color favorito de muchos peces."),
+            # (Resto de preguntas iguales que ya tienes) ...
+            ("¿Qué parte del sistema acuapónico ayuda a filtrar el agua?", "filtro", "Elimina impurezas antes de que vuelva a las plantas."),
+        ]
+
+    async def event_ready(self):
+        print(f'Bot conectado como {self.nick}')
+        if not self.challenge_task_running:
+            self.loop.create_task(self.challenge_task())
+            self.loop.create_task(self.reminder_task())
+            self.challenge_task_running = True
+
+    async def event_message(self, message):import os
+import time
+import asyncio
+import random
+import unicodedata
+import requests
+from dotenv import load_dotenv
+from twitchio.ext import commands
+
+# Carga el archivo de variables de entorno (ajusta el nombre si es necesario)
+load_dotenv("token.env")
+
+# --- Configuración de ThingSpeak ---
+THINGSPEAK_WRITE_KEY = os.getenv("THINGSPEAK_WRITE_KEY")
+THINGSPEAK_CHANNEL_ID = os.getenv("THINGSPEAK_CHANNEL_ID")  # Por si quieres usarlo en el futuro
+
+COLOR_MAP = {
+    "ROJO":    "FF0000",
+    "AZUL":    "0000FF",
+    "AMARILLO":"FFFF00",
+    "VERDE":   "00FF00",
+    "NARANJA": "FFA500",
+    "MORADO":  "800080",
+    "BLANCO":  "FFFFFF",
+    "ROSA":    "FFC0CB",
+    "ARCOIRIS":"RAINBOW"
+}
+
+def normalize_text(text):
+    text = unicodedata.normalize('NFD', text)
+    text = ''.join([c for c in text if unicodedata.category(c) != 'Mn'])
+    return ''.join([c for c in text if c.isalnum() or c.isspace()]).lower().strip()
+
+class Bot(commands.Bot):
+    def __init__(self):
+        super().__init__(
+            token=os.getenv("TWITCH_TOKEN"),
+            prefix="!",
+            initial_channels=["piscisteleco"]
+        )
+        self.secret_question = None
+        self.secret_answer = None
+        self.secret_hint = None
+        self.user_points = {}
+        self.duelo = None
+        self.duelo_active = False
+        self.challenge_task_running = False
+        self.locura_active = False
+        self.locura_counter = 0
+        self.used_questions = set()
+
+        self.question_pool = [
+            # (Preguntas básicas aquí... las mismas que tenías)
+            ("¿De qué color es el cielo durante un día despejado?", "azul", "Es el color favorito de muchos peces."),
+            # (Resto de preguntas iguales que ya tienes) ...
+            ("¿Qué parte del sistema acuapónico ayuda a filtrar el agua?", "filtro", "Elimina impurezas antes de que vuelva a las plantas."),
+        ]
+
+    async def event_ready(self):
+        print(f'Bot conectado como {self.nick}')
+        if not self.challenge_task_running:
+            self.loop.create_task(self.challenge_task())
+            self.loop.create_task(self.reminder_task())
+            self.challenge_task_running = True
+
+    async def event_message(self, message):
+        if not message.content or message.author.name.lower() == self.nick.lower():
+            return
+
+        await self.handle_commands(message)
+        msg_normalized = normalize_text(message.content)
+
+        if "hola" in msg_normalized:
+            await message.channel.send(f"Hola, {message.author.name}. ¿Listo para aprender algo nuevo?")
+
+        if self.secret_answer:
+            if msg_normalized == normalize_text(self.secret_answer):
+                user = message.author.name
+                self.user_points[user] = self.user_points.get(user, 0) + 5
+                await message.channel.send(f"Correcto, {user}. Has ganado 5 puntos.")
+                self.secret_question = None
+                self.secret_answer = None
+                self.secret_hint = None
+
+        if self.duelo_active and self.duelo:
+            correct_answer = normalize_text(self.duelo['current_answer'])
+            if msg_normalized == correct_answer and message.author.name in [self.duelo['p1'], self.duelo['p2']]:
+                await self.register_duel_answer(message.author.name, message.channel)
+
+        if self.locura_active:
+            if "cuac" in msg_normalized:
+                await message.channel.send(f"{message.author.name} ha dicho ¡CUAC! ¡Estás participando en la locura!")
+            if "robot" in msg_normalized:
+                await message.channel.send(f"{message.author.name} ha hablado como un robot. ¡Programación aceptada!")
+            if msg_normalized == msg_normalized[::-1]:
+                await message.channel.send(f"{message.author.name} ha hablado en espejo. ¡Increíble!")
+
+    @commands.command()
+    async def comandos(self, ctx):
+        msg = (
+            "**Comandos disponibles**\n"
+            "!duelo @usuario – Reta a otro usuario a un duelo de trivia (Bo5)\n"
+            "!acepto – Acepta un duelo\n"
+            "!ranking – Muestra el ranking de puntos\n"
+            "!reglas – Muestra las reglas del juego\n"
+            "!pista – Pide una pista de la pregunta actual\n"
+            "!locura – Activa o desactiva la locura en el chat\n"
+            "!led <color> – Cambia el color del LED\n"
+        )
+        await ctx.send(msg)
+
+    @commands.command()
+    async def reglas(self, ctx):
+        reglas_msg = (
+            "**Reglas del juego**\n"
+            "1. Adivina palabras o responde preguntas para ganar puntos.\n"
+            "2. Puedes retar a otros con !duelo.\n"
+            "3. Los duelos son al mejor de 5 preguntas.\n"
+            "4. Usa !ranking para ver tu puntuación.\n"
+            "5. Usa !pista si necesitas ayuda.\n"
+            "6. ¡Diviértete y aprende con el proyecto Piscis!"
+        )
+        await ctx.send(reglas_msg)
+
+    @commands.command()
+    async def ranking(self, ctx):
+        ranking = sorted(self.user_points.items(), key=lambda x: x[1], reverse=True)
+        if not ranking:
+            await ctx.send("Nadie tiene puntos todavía.")
+            return
+        ranking_msg = "**Ranking de puntos**\n"
+        for idx, (user, points) in enumerate(ranking, 1):
+            ranking_msg += f"{idx}. {user}: {points} puntos\n"
+        await ctx.send(ranking_msg)
+
+    @commands.command()
+    async def pista(self, ctx):
+        if self.secret_question and self.secret_hint:
+            await ctx.send(f"Pista: {self.secret_hint}")
+        else:
+            await ctx.send("No hay ninguna pregunta activa ahora mismo.")
+
+    @commands.command()
+    async def duelo(self, ctx, user: str):
+        user = user.lstrip("@")
+        if self.duelo_active:
+            await ctx.send("Ya hay un duelo en curso.")
+            return
+        self.duelo = {
+            'p1': ctx.author.name,
+            'p2': user,
+            'score': {ctx.author.name: 0, user: 0},
+            'round': 0,
+            'accepted': False,
+            'current_answer': None,
+            'channel': ctx.channel
+        }
+        await ctx.send(f"¡Duelo iniciado entre {ctx.author.name} y {user}! ¡Esperando aceptación!")
+
+    @commands.command()
+    async def acepto(self, ctx):
+        if not self.duelo or self.duelo['accepted']:
+            await ctx.send("Ya se ha aceptado este duelo o no hay ningún duelo pendiente.")
+            return
+        if self.duelo['p2'] != ctx.author.name:
+            await ctx.send("No eres el segundo jugador de este duelo.")
+            return
+        self.duelo['accepted'] = True
+        self.duelo_active = True
+        await ctx.send(f"{ctx.author.name} ha aceptado el duelo. Comienza el juego.")
+        await asyncio.sleep(2)
+        await self.next_duel_round()
+
+    async def next_duel_round(self):
+        if not self.duelo:
+            return
+        self.duelo['round'] += 1
+        available_questions = [q for q in self.question_pool if q not in self.used_questions]
+        if not available_questions:
+            await self.duelo['channel'].send("¡No hay más preguntas disponibles para el duelo!")
+            return
+        question_tuple = random.choice(available_questions)
+        question, answer, hint = question_tuple
+        self.used_questions.add(question_tuple)
+        self.duelo['current_answer'] = answer
+        self.duelo['hint'] = hint
+        await self.duelo['channel'].send(f"Ronda {self.duelo['round']}: {question}")
+
+    async def register_duel_answer(self, winner, channel):
+        self.duelo['score'][winner] += 1
+        await channel.send(f"🎯 {winner} respondió correctamente y gana la ronda!")
+        await asyncio.sleep(1)
+        if self.duelo['score'][winner] == 3:
+            self.duelo_active = False
+            self.user_points[winner] = self.user_points.get(winner, 0) + 15
+            await channel.send(f"🏆 {winner} ha ganado el duelo al mejor de 5! +15 puntos 🎉")
+            self.duelo = None
+        else:
+            await self.next_duel_round()
+
+    @commands.command()
+    async def locura(self, ctx):
+        self.locura_active = not self.locura_active
+        if self.locura_active:
+            await ctx.send("¡La locura está ACTIVADA! Prueba usando 'cuac', 'robot' o escribe texto al revés.")
+        else:
+            await ctx.send("¡La locura se ha DESACTIVADO! El chat vuelve a la normalidad.")
+
+    async def challenge_task(self):
+        while True:
+            await asyncio.sleep(180)
+            if self.connected_channels:
+                channel = self.connected_channels[0]
+                if self.secret_answer:
+                    await channel.send(f"⏰ Se acabó el tiempo para la pregunta: '{self.secret_question}'. La respuesta era: {self.secret_answer}")
+                    self.secret_question = None
+                    self.secret_answer = None
+                    self.secret_hint = None
+                question_tuple = random.choice(self.question_pool)
+                question, answer, hint = question_tuple
+                self.secret_question = question
+                self.secret_answer = answer
+                self.secret_hint = hint
+                await channel.send(f"🧠 Pregunta rápida: {question}")
+
+    async def reminder_task(self):
+        while True:
+            await asyncio.sleep(600)
+            if self.connected_channels:
+                await self.connected_channels[0].send("¿Ya conoces los comandos? Usa !comandos para saber todo lo que puedes hacer ✨")
+
+    @commands.command(name='led')
+    async def led(self, ctx):
+        partes = ctx.message.content.strip().upper().split()
+        if len(partes) != 2 or partes[1] not in COLOR_MAP:
+            validos = ", ".join(COLOR_MAP.keys())
+            await ctx.send(f"Uso correcto: !led <color>. Colores disponibles: {validos}")
+            return
+        valor = COLOR_MAP[partes[1]]
+        url = (
+            f"https://api.thingspeak.com/update"
+            f"?api_key={THINGSPEAK_WRITE_KEY}"
+            f"&field3={valor}"
+        )
+        try:
+            resp = requests.get(url, timeout=5)
+            if resp.status_code == 200 and int(resp.text) > 0:
+                await ctx.send(f"💡 ¡Color {partes[1]} activado! 💡")
+            else:
+                await ctx.send("❌ Falló escritura en ThingSpeak.")
+        except requests.RequestException:
+            await ctx.send("❌ No pude conectar con ThingSpeak.")
+
+if __name__ == "__main__":
+    while True:
+        try:
+            bot = Bot()
+            print("Iniciando bot...")
+            bot.run()
+        except Exception as e:
+            print(f"❌ Error: {e}")
+            print("🔁 Reiniciando bot en 5 segundos...")
+            time.sleep(5)
+
+
+        if not message.content or message.author.name.lower() == self.nick.lower():
+            return
+
+        await self.handle_commands(message)
+        msg_normalized = normalize_text(message.content)
+
+        if "hola" in msg_normalized:
+            await message.channel.send(f"Hola, {message.author.name}. ¿Listo para aprender algo nuevo?")
+
+        if self.secret_answer:
+            if msg_normalized == normalize_text(self.secret_answer):
+                user = message.author.name
+                self.user_points[user] = self.user_points.get(user, 0) + 5
+                await message.channel.send(f"Correcto, {user}. Has ganado 5 puntos.")
+                self.secret_question = None
+                self.secret_answer = None
+                self.secret_hint = None
+
+        if self.duelo_active and self.duelo:
+            correct_answer = normalize_text(self.duelo['current_answer'])
+            if msg_normalized == correct_answer and message.author.name in [self.duelo['p1'], self.duelo['p2']]:
+                await self.register_duel_answer(message.author.name, message.channel)
+
+        if self.locura_active:
+            if "cuac" in msg_normalized:
+                await message.channel.send(f"{message.author.name} ha dicho ¡CUAC! ¡Estás participando en la locura!")
+            if "robot" in msg_normalized:
+                await message.channel.send(f"{message.author.name} ha hablado como un robot. ¡Programación aceptada!")
+            if msg_normalized == msg_normalized[::-1]:
+                await message.channel.send(f"{message.author.name} ha hablado en espejo. ¡Increíble!")
+
+    @commands.command()
+    async def comandos(self, ctx):
+        msg = (
+            "**Comandos disponibles**\n"
+            "!duelo @usuario – Reta a otro usuario a un duelo de trivia (Bo5)\n"
+            "!acepto – Acepta un duelo\n"
+            "!ranking – Muestra el ranking de puntos\n"
+            "!reglas – Muestra las reglas del juego\n"
+            "!pista – Pide una pista de la pregunta actual\n"
+            "!locura – Activa o desactiva la locura en el chat\n"
+            "!led <color> – Cambia el color del LED\n"
+        )
+        await ctx.send(msg)
+
+    @commands.command()
+    async def reglas(self, ctx):
+        reglas_msg = (
+            "**Reglas del juego**\n"
+            "1. Adivina palabras o responde preguntas para ganar puntos.\n"
+            "2. Puedes retar a otros con !duelo.\n"
+            "3. Los duelos son al mejor de 5 preguntas.\n"
+            "4. Usa !ranking para ver tu puntuación.\n"
+            "5. Usa !pista si necesitas ayuda.\n"
+            "6. ¡Diviértete y aprende con el proyecto Piscis!"
+        )
+        await ctx.send(reglas_msg)
+
+    @commands.command()
+    async def ranking(self, ctx):
+        ranking = sorted(self.user_points.items(), key=lambda x: x[1], reverse=True)
+        if not ranking:
+            await ctx.send("Nadie tiene puntos todavía.")
+            return
+        ranking_msg = "**Ranking de puntos**\n"
+        for idx, (user, points) in enumerate(ranking, 1):
+            ranking_msg += f"{idx}. {user}: {points} puntos\n"
+        await ctx.send(ranking_msg)
+
+    @commands.command()
+    async def pista(self, ctx):
+        if self.secret_question and self.secret_hint:
+            await ctx.send(f"Pista: {self.secret_hint}")
+        else:
+            await ctx.send("No hay ninguna pregunta activa ahora mismo.")
+
+    @commands.command()
+    async def duelo(self, ctx, user: str):
+        user = user.lstrip("@")
+        if self.duelo_active:
+            await ctx.send("Ya hay un duelo en curso.")
+            return
+        self.duelo = {
+            'p1': ctx.author.name,
+            'p2': user,
+            'score': {ctx.author.name: 0, user: 0},
+            'round': 0,
+            'accepted': False,
+            'current_answer': None,
+            'channel': ctx.channel
+        }
+        await ctx.send(f"¡Duelo iniciado entre {ctx.author.name} y {user}! ¡Esperando aceptación!")
+
+    @commands.command()
+    async def acepto(self, ctx):
+        if not self.duelo or self.duelo['accepted']:
+            await ctx.send("Ya se ha aceptado este duelo o no hay ningún duelo pendiente.")
+            return
+        if self.duelo['p2'] != ctx.author.name:
+            await ctx.send("No eres el segundo jugador de este duelo.")
+            return
+        self.duelo['accepted'] = True
+        self.duelo_active = True
+        await ctx.send(f"{ctx.author.name} ha aceptado el duelo. Comienza el juego.")
+        await asyncio.sleep(2)
+        await self.next_duel_round()
+
+    async def next_duel_round(self):
+        if not self.duelo:
+            return
+        self.duelo['round'] += 1
+        available_questions = [q for q in self.question_pool if q not in self.used_questions]
+        if not available_questions:
+            await self.duelo['channel'].send("¡No hay más preguntas disponibles para el duelo!")
+            return
+        question_tuple = random.choice(available_questions)
+        question, answer, hint = question_tuple
+        self.used_questions.add(question_tuple)
+        self.duelo['current_answer'] = answer
+        self.duelo['hint'] = hint
+        await self.duelo['channel'].send(f"Ronda {self.duelo['round']}: {question}")
+
+    async def register_duel_answer(self, winner, channel):
+        self.duelo['score'][winner] += 1
+        await channel.send(f"🎯 {winner} respondió correctamente y gana la ronda!")
+        await asyncio.sleep(1)
+        if self.duelo['score'][winner] == 3:
+            self.duelo_active = False
+            self.user_points[winner] = self.user_points.get(winner, 0) + 15
+            await channel.send(f"🏆 {winner} ha ganado el duelo al mejor de 5! +15 puntos 🎉")
+            self.duelo = None
+        else:
+            await self.next_duel_round()
+
+    @commands.command()
+    async def locura(self, ctx):
+        self.locura_active = not self.locura_active
+        if self.locura_active:
+            await ctx.send("¡La locura está ACTIVADA! Prueba usando 'cuac', 'robot' o escribe texto al revés.")
+        else:
+            await ctx.send("¡La locura se ha DESACTIVADO! El chat vuelve a la normalidad.")
+
+    async def challenge_task(self):
+        while True:
+            await asyncio.sleep(180)
+            if self.connected_channels:
+                channel = self.connected_channels[0]
+                if self.secret_answer:
+                    await channel.send(f"⏰ Se acabó el tiempo para la pregunta: '{self.secret_question}'. La respuesta era: {self.secret_answer}")
+                    self.secret_question = None
+                    self.secret_answer = None
+                    self.secret_hint = None
+                question_tuple = random.choice(self.question_pool)
+                question, answer, hint = question_tuple
+                self.secret_question = question
+                self.secret_answer = answer
+                self.secret_hint = hint
+                await channel.send(f"🧠 Pregunta rápida: {question}")
+
+    async def reminder_task(self):
+        while True:
+            await asyncio.sleep(600)
+            if self.connected_channels:
+                await self.connected_channels[0].send("¿Ya conoces los comandos? Usa !comandos para saber todo lo que puedes hacer ✨")
+
+    @commands.command(name='led')
+    async def led(self, ctx):
+        partes = ctx.message.content.strip().upper().split()
+        if len(partes) != 2 or partes[1] not in COLOR_MAP:
+            validos = ", ".join(COLOR_MAP.keys())
+            await ctx.send(f"Uso correcto: !led <color>. Colores disponibles: {validos}")
+            return
+        valor = COLOR_MAP[partes[1]]
+        url = (
+            f"https://api.thingspeak.com/update"
+            f"?api_key={THINGSPEAK_WRITE_KEY}"
+            f"&field3={valor}"
+        )
+        try:
+            resp = requests.get(url, timeout=5)
+            if resp.status_code == 200 and int(resp.text) > 0:
+                await ctx.send(f"💡 ¡Color {partes[1]} activado! 💡")
+            else:
+                await ctx.send("❌ Falló escritura en ThingSpeak.")
+        except requests.RequestException:
+            await ctx.send("❌ No pude conectar con ThingSpeak.")
+
+if __name__ == "__main__":
+    while True:
+        try:
+            bot = Bot()
+            print("Iniciando bot...")
+            bot.run()
+        except Exception as e:
+            print(f"❌ Error: {e}")
+            print("🔁 Reiniciando bot en 5 segundos...")
+            time.sleep(5)
+
