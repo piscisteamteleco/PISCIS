@@ -3,7 +3,7 @@
 **Introducción**
 ![Texto alternativo](imagenes/imagen1.jpg)
 
-Buenos días,<>
+Hola,<>
 
 Somos PISCISTELECO y, en este documento, iremos dando un breve resumen de nuestro proyecto. Piscis es un proyecto creado para el concurso de telecomunicaciones TELECO GAMES 2025.
 Nuestro objetivo es desarrollar un sistema innovador basado en acuaponia que optimice la producción de alimentos de manera sostenible.
