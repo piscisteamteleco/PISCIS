@@ -1,3 +1,4 @@
+![Texto alternativo](imagenes/logo.png)
 **Proyecto Piscis - Sistema de Acuaponia**
 
 **Introducción**
