@@ -1,6 +1,7 @@
 **Proyecto Piscis - Sistema de Acuaponia**
 
 **Introducción**
+![Texto alternativo](imagenes/imagen1.jpg)
 
 Buenos días,
 
@@ -14,7 +15,7 @@ Un sistema de acuaponia es una combinación de acuicultura (cría de peces) e hi
 **Funcionamiento del sistema**
 
 Nuestro sistema de acuaponia se basa en los siguientes componentes:
-1. **Pecerat:** Donde los peces crecen y generan residuos ricos en amoníaco.
+1. **Pecera:** Donde los peces crecen y generan residuos ricos en amoníaco.
 2. **Biofiltro:** Convierte el amoníaco en nitratos, una forma de nutriente absorbible por las plantas.
 3. **Sistema de cultivo hidropónico:** Donde las plantas absorben los nutrientes y purifican el agua.
 
