@@ -3,9 +3,9 @@
 **Introducción**
 ![Texto alternativo](imagenes/imagen1.jpg)
 
-Buenos días,
+Buenos días,<>
 
-Soy el team leader de PISCISTELECO y, en este documento, iré dando un breve resumen de nuestro proyecto. Piscis es un proyecto creado para el concurso de telecomunicaciones de la Universidad Politécnica de Cartagena (UPCT).
+Somos PISCISTELECO y, en este documento, iremos dando un breve resumen de nuestro proyecto. Piscis es un proyecto creado para el concurso de telecomunicaciones TELECO GAMES 2025.
 Nuestro objetivo es desarrollar un sistema innovador basado en acuaponia que optimice la producción de alimentos de manera sostenible.
 
 **¿Qué es un sistema de acuaponia?**
@@ -16,7 +16,7 @@ Un sistema de acuaponia es una combinación de acuicultura (cría de peces) e hi
 
 Nuestro sistema de acuaponia se basa en los siguientes componentes:
 1. **Pecera:** Donde los peces crecen y generan residuos ricos en amoníaco.
-2. **Biofiltro:** Convierte el amoníaco en nitratos, una forma de nutriente absorbible por las plantas.
+2. **Plantas:** Convierte el amoníaco en nitratos, una forma de nutriente absorbible por las plantas.
 3. **Sistema de cultivo hidropónico:** Donde las plantas absorben los nutrientes y purifican el agua.
 
 
@@ -29,10 +29,11 @@ Nuestro sistema de acuaponia se basa en los siguientes componentes:
 
 **Conclusión**
 
-El proyecto Piscis busca demostrar cómo la tecnología y la sostenibilidad pueden integrarse para mejorar la producción de alimentos de manera eficiente y respetuosa con el medioambiente. Creemos que nuestra propuesta puede aportar una solución innovadora en el ámbito de la agroalimentación y la conservación de recursos hídricos.
+Piscis es un ecosistema donde peces, plantas y tecnología conviven en armonía.
+Hemos demostrado que las telecomunicaciones pueden conectar no solo datos, sino también vida, sostenibilidad y conciencia.
+Y lo hacemos en directo, las 24 horas, compartiendo conocimiento con el mundo.
 
-Esperamos que este proyecto sea bien recibido en el concurso de telecomunicaciones de la UPCT y que sirva como inspiración para futuras aplicaciones de la acuaponia en distintos sectores.
-
-Atentamente,  
+Porque para nosotros, conectar no es solo una cuestión de cables…
+ 
 **Equipo PISCISTELECO**
 
