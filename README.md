@@ -3,11 +3,11 @@
 **Introducción**
 ![Texto alternativo](imagenes/imagen1.jpg)
 
-Hola,<>
+Hola,
 
 Somos PISCISTELECO y, en este documento, iremos dando un breve resumen de nuestro proyecto. Piscis es un proyecto creado para el concurso de telecomunicaciones TELECO GAMES 2025.
 Nuestro objetivo es desarrollar un sistema innovador basado en acuaponia que optimice la producción de alimentos de manera sostenible.
-
+![Texto alternativo](imagenes/imagen2.png)
 **¿Qué es un sistema de acuaponia?**
 
 Un sistema de acuaponia es una combinación de acuicultura (cría de peces) e hidroponía (cultivo de plantas sin suelo). Este método permite el crecimiento simultáneo de peces y plantas en un entorno controlado, en el que los desechos de los peces proporcionan nutrientes esenciales para las plantas, mientras que estas purifican el agua, creando un ciclo cerrado y eficiente.
