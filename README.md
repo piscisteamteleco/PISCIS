@@ -26,7 +26,7 @@ Nuestro sistema de acuaponia se basa en los siguientes componentes:
 - **Eficiencia:** Optimiza el uso de recursos, permitiendo una producción más rápida y saludable.
 - **Automatización y control inteligente:** Uso de sensores y dispositivos IoT para la monitorización remota y ajuste automático de las condiciones del sistema.
 - **Versatilidad:** Puede aplicarse en entornos urbanos, rurales y domésticos, promoviendo la autosuficiencia alimentaria.
-
+![Texto alternativo](imagenes/imagen3.jpg)
 **Conclusión**
 
 Piscis es un ecosistema donde peces, plantas y tecnología conviven en armonía.
